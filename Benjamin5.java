@@ -21,6 +21,7 @@ class Benjamin5 {
 
 	TestTom tt = new TestTom();
 	//Random rand = new Random();
+	//rand.nextInt();
 	//myArray(rand.nextInt(myArray.length))];
 	les.filtest();
 
@@ -42,7 +43,10 @@ class Sudokobeholder {
 
 abstract class Rute {//kanskje ikke abstract
     int verdi;
-    int tVerdi;//Testverdi som programmet bruker naar den tester losninger.
+    int tVerdi = 0;//Testverdi som programmet bruker naar den tester losninger.
+
+    int losTeller = 0;
+    int forsok = 0;
 
     boolean tom;
     Boks boks;
@@ -53,18 +57,77 @@ abstract class Rute {//kanskje ikke abstract
 
     Rute(int verdi) {
 	this.verdi = verdi;
+	tVerdi = verdi;
+    }
+
+    void settInnTempVerdi(int i) {
+	tVerdi = i;
     }
 
     void fyllUtRestenAvBrettet() {
-    	//if tom
 
-    	//if neste == null
-    	//brettet.erJegLost();
+	if (tom) {
+
+	    Random rand = new Random();
+	    rand.nextInt();
+
+	    int lav = 1;
+	    int hoy = brett.bredde+1;//+1????
+
+	    //  int a = 0;
+	    //  while (erIiBKR(a)) {
+	    //	a++;
+	    //   }
+	    //tVerdi = a;
+	    //   if (a <= brett.bredde) {
+	    //    settInnTempVerdi(a);
+	    //    }
+	    int i = 0;
+	    int a = 0;
+	    while (erIiBKR(i)) {
+		i = rand.nextInt(hoy-lav) + lav;
+		//	System.out.println(i);
+		    
+		a++;
+		if (a>500) {
+		    System.out.println("BREAK!");
+		    break;
+		}
+	    }
+	    settInnTempVerdi(i);
+
+	    //System.out.println(tVerdi);
+	    //brett.skrivUt();
+	    if (neste!=null) {
+		neste.fyllUtRestenAvBrettet();
+	    }
+	} else {
+	    if (neste!=null) {
+		tVerdi = 0;
+		neste.fyllUtRestenAvBrettet();
+	    }
+	}
+	if (neste==null) {
+
+	    System.out.println(brett.erJegLost());
+	    if (brett.erJegLost()) {
+		losTeller++;
+	    }
+
+	    forsok++;
+	    //	brett.skrivUtT();
+	    //	System.out.println("");
+	    brett.resetBrett();
+	    //brett.skrivUtT();
+	    System.out.println(losTeller);
+	    System.out.println(forsok);
+	}
+
     }    
 
     boolean erIiBKR(int i) {
 	for (int j = 0; j<boks.BKR.length; j++) {
-	    if (i == boks.BKR[j].verdi || i == kolonne.BKR[j].verdi || i == rad.BKR[j].verdi) {
+	    if (i == boks.BKR[j].tVerdi || i == kolonne.BKR[j].tVerdi || i == rad.BKR[j].tVerdi) {
 		return true;
 	    }
 	}
@@ -113,21 +176,47 @@ class Brett {
 	}
     }
 
+    void resetBrett() {
+	for (int i = 0; i!=brettet.length; i++) {
+	    for (int j = 0; j< brettet.length; j++) {
+		if (brettet[i][j].tom) {
+		brettet[i][j].settInnTempVerdi(0);
+		}
+	    }
+	}
+    }
+
     void losMeg() {
 	brettet[0][0].fyllUtRestenAvBrettet();
     }
 
-    void skrivUt() {
+    boolean erJegLost() {
+	for (int i = 0; i!=brettet.length; i++) {
+	    for (int j = 0; j< brettet.length; j++) {
+		if (brettet[i][j].erIiBKR(brettet[i][j].tVerdi)) {
+		    return false;
+		}
+	    }
+	}
+	return true;
+    }
+
+    void skrivUtT() {
+	for (int i = 0; i!=brettet.length; i++) {
+	    for (int j = 0; j< brettet.length; j++) {
+		System.out.print(brettet[i][j].tVerdi);
+	    }
+	    System.out.println("");
+	}
+        
+    }
+
+    void skrivUt() {//int a
 
 	for (int i = 0; i!=brettet.length; i++) {
 	    for (int j = 0; j< brettet.length; j++) {
 		if (!brettet[i][j].tom) {
-		    System.out.print(brettet[i][j].verdi);
-		    //Legg inn t-verdi eller v.
-
-		    //Test
-		    //System.out.println(rad[i].BKR[i].verdi);
-		    //	System.out.println(kolonne[i].BKR[i].verdi);
+		    	System.out.print(brettet[i][j].verdi);
 		} else {
 		    System.out.print(".");
 		}
@@ -302,6 +391,10 @@ class LesFraFil {
 	    //   brett.skrivUt();
 
 	    f.close();
+
+	    for (int i = 0; i<2000000; i++) {
+	    brett.losMeg();
+	    }
 
 	} catch (FileNotFoundException e) {
 	    System.out.println("Fil 1 ikke funnet.");
