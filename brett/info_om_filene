@@ -1,0 +1,27 @@
+De tre første heltallene:
+
+1. n = antall ruter i en rad, kolonne eller boks. (kvadratet av dette
+   tallet er antall ruter i brettet)
+
+2. antall rader i en boks
+
+3. antall kolonner i en boks
+
+Så følger n x n tegn som representerer det som skal stå i rutene fra
+øverst til venstre mot høyre og nedover (leseretning på norsk og
+engelsk). Punktum '.' står for en rute som ikke har en verdi.
+
+A , B, C, står for heltallene
+
+A = 10
+B = 11
+C = 12
+...
+Z = 35
+@ = 36
+
+Formatet tillater ikke mer enn maksimalt 36 x 36 ruter.
+
+
+
+

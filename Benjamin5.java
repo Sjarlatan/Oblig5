@@ -49,6 +49,7 @@ abstract class Rute {//kanskje ikke abstract
     Kolonne kolonne;
     Rad rad;
     Rute neste;
+    Brett brett;
 
     Rute(int verdi) {
 	this.verdi = verdi;
@@ -138,36 +139,26 @@ class Brett {
 
 abstract class BoksKolonneRad {
     Rute[] BKR;
-
     BoksKolonneRad(int i) {
 	BKR = new Rute[i];
     }
 }
 
 class Boks extends BoksKolonneRad {
-    //	Rute[] boks;
-
     Boks(int i) {
 	super(i);
-	//	boks = new Rute[i];
     }
 }
 
 class Kolonne extends BoksKolonneRad {
-    //	Rute[] kolonne;
-
     Kolonne(int i) {
 	super(i);
-	//	kolonne = new Rute[i];
     }
 }
 
 class Rad extends BoksKolonneRad {
-    //	Rute[] rad;
-
     Rad(int i) {
 	super(i);
-	//	rad = new Rute[i];
     }
 }
 
@@ -245,6 +236,7 @@ class LesFraFil {
 			brett.brettet[i][j].boks = brett.boks[boks];
 			brett.brettet[i][j].rad = brett.rad[i];
 			brett.brettet[i][j].kolonne = brett.kolonne[j];
+			brett.brettet[i][j].brett = brett;
 	    			
 		    } else {
 
@@ -275,6 +267,7 @@ class LesFraFil {
 			brett.brettet[i][j].boks = brett.boks[boks];
 			brett.brettet[i][j].rad = brett.rad[i];
 			brett.brettet[i][j].kolonne = brett.kolonne[j];
+			brett.brettet[i][j].brett = brett;
 
 		    }
 		    radTeller++;
