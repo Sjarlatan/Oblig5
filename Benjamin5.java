@@ -66,105 +66,111 @@
 
 	}
 
-	abstract class Rute {//kanskje ikke abstract
-		int verdi;
-	    int tVerdi;//Testverdi som programmet bruker naar den tester losninger.
+abstract class Rute {//kanskje ikke abstract
+    int verdi;
+    int tVerdi;//Testverdi som programmet bruker naar den tester losninger.
 
-	    int losTeller = 0;
-	    int forsok = 0; //Test i random. Skal muligens kastes.
+    int losTeller = 0;
+    int forsok = 0; //Test i random. Skal muligens kastes.
 
-	    boolean tom;
-	    Boks boks;
-	    Kolonne kolonne;
-	    Rad rad;
-	    Rute neste;
-	    Brett brett;
+    boolean tom;
+    Boks boks;
+    Kolonne kolonne;
+    Rad rad;
+    Rute neste;
+    Brett brett;
 
-	    Rute(int verdi) {
-	    	this.verdi = verdi;
-	    	tVerdi = verdi;
-	    }
+    Rute(int verdi) {
+	this.verdi = verdi;
+	tVerdi = verdi;
+    }
 
-	    void settInnTempVerdi(int i) {
-	    	tVerdi = i;
-	    }
+    void settInnTempVerdi(int i) {
+	tVerdi = i;
+    }
 
-	    void fyllUtRestenAvBrettet() {//Rute tmp
-		System.out.println("!1");
-		boolean lost = false;
-		if (neste==null) {
-		    System.out.println("!2");
+    void fyllUtRestenAvBrettet() {//Rute tmp
+	System.out.println("!1");
+	boolean lost = false;
+	if (neste==null) {
+	    System.out.println("!2");
 
-		    if (tom) {
-			for (int i = 0; i<brett.brettet.length; i++) {
-			    if (alt(i)) {
-				tVerdi=i;
-				lost=true;
-			    } else {
-				lost=false;
-				break;
-			    }
-			}
+	    if (tom) {
+		for (int i = 0; i<brett.brettet.length; i++) {
+		    if (alt(i)) {
+			tVerdi=i;
+			lost=true;
 		    } else {
-			lost = true;
+			lost=false;
+			break;
 		    }
-
 		}
+	    } else {
+		lost = true;
+	    }
 
-		if (neste!=null) {
+	}
 
-		    if (!tom) {
-			neste.fyllUtRestenAvBrettet();
-		    } else {
-			for (int i = 1; i<brett.brettet.length+1; i++) {
+	if (neste!=null) {
+
+	    if (!tom) {
+		neste.fyllUtRestenAvBrettet();
+	    } else {
+		for (int i = 1; i<brett.brettet.length+1; i++) {
 		        
-			    if (alt(i)) {
-				System.out.println(i);
-				tVerdi=i;
-				System.out.println(tVerdi);
-				neste.fyllUtRestenAvBrettet();
-			    }
-			
-			}
-
-			if (tVerdi==0) {
-			    System.out.println("Return!");
-			    return;
-			}
-
+		    if (alt(i)) {
+			System.out.println(i);
+			tVerdi=i;
+			System.out.println(tVerdi);
+			neste.fyllUtRestenAvBrettet();
 		    }
 
+		    //  if (i<brett.brettet.length+1) {
+		    //	tVerdi=i;
+		    //	System.out.println(tVerdi);
+		    //	neste.fyllUtRestenAvBrettet();
+		    //	   }
+			
 		}
 
-		if (lost) {//lost
-		    brett.skrivUtT();
-		    System.out.println("");
+		if (tVerdi==0) {
+		    System.out.println("Return!");
+		    return;
 		}
 
 	    }
 
-	    boolean alt(int i) {
-		if (!boks.plass(i)) {
-		    return false;
-		}
-		if (!rad.plass(i)) {
-		    return false;
-		}
-		if (!kolonne.plass(i)) {
-		    return false;
-		}
+	}
+
+	if (lost) {//lost
+	    brett.skrivUtT();
+	    System.out.println("");
+	}
+
+    }
+
+    boolean alt(int i) {
+	if (!boks.plass(i)) {
+	    return false;
+	}
+	if (!rad.plass(i)) {
+	    return false;
+	}
+	if (!kolonne.plass(i)) {
+	    return false;
+	}
+	return true;
+    }
+
+    boolean erIiBKR(int i) {
+	for (int j = 0; j<boks.BKR.length; j++) {
+	    if (i == boks.BKR[j].tVerdi || i == kolonne.BKR[j].tVerdi || i == rad.BKR[j].tVerdi) {
 		return true;
 	    }
-
-	    boolean erIiBKR(int i) {
-	    	for (int j = 0; j<boks.BKR.length; j++) {
-		    if (i == boks.BKR[j].tVerdi || i == kolonne.BKR[j].tVerdi || i == rad.BKR[j].tVerdi) {
-			return true;
-		    }
-	    	}
-	    	return false;
-	    }
 	}
+	return false;
+    }
+}
 
 	class TomRute extends Rute {
 		int verdi;
@@ -309,170 +315,147 @@
 		}
 	}
 
-	class LesFraFil {
+class LesFraFil {
 
-		void filtest() {
+    Rute lagRute(char myChar) {
+	if (myChar == '.') {
 
-		//final JFileChooser fc = new JFileChooser();
-		//int returnVal = fc.showOpenDialog(null);
-		//System.out.println(fc.getSelectedFile());
+	    return new TomRute(0);
+	}
 
-		//Testfil: 
-		//File fil1 = new File("6x6oppg28losn.txt");
+	int bruk = (int) myChar - 48;
+	return new FyltRute(bruk);
+    }
 
-		//JfileChooser
-		//File fil1 = new File(fc.getSelectedFile());
+    void filtest() {
 
-			File fil1 = new File("6x6oppg28losn.txt");
-			int teller = 0;
+	//final JFileChooser fc = new JFileChooser();
+	//int returnVal = fc.showOpenDialog(null);
+	//System.out.println(fc.getSelectedFile());
 
-			try {
-				Scanner f = new Scanner(fil1);
+	//Testfil: 
+	//File fil1 = new File("6x6oppg28losn.txt");
 
-		    int brettStr = f.nextInt();//6
-		    //OBS: Skal vaere omvendt. radStr = kol. kolStr = rad
-		    int radStr = f.nextInt();//2 //Bokser innad i brettet. Sporr Linn. Jepp.
-		    int kolStr = f.nextInt();//3
+	//JfileChooser
+	//File fil1 = new File(fc.getSelectedFile());
 
-		    int radTeller = 0;
-		    int kolTeller = 0;
+	File fil1 = new File("6x6oppg28losn.txt");
+	int teller = 0;
 
-		    Rute forrige = null;
+	try {
+	    Scanner f = new Scanner(fil1);
 
-		    //   int kolTeller = 0;
-		    // System.out.println(brettStr + " " + radStr + " " + kolStr);
+	    int brettStr = f.nextInt();//6
+	    //OBS: Skal vaere omvendt. radStr = kol. kolStr = rad
+	    int radStr = f.nextInt();//2 //Bokser innad i brettet. Sporr Linn. Jepp.
+	    int kolStr = f.nextInt();//3
+
+	    int radTeller = 0;
+	    int kolTeller = 0;
+
+	    Rute forrige = null;
+
+	    //   int kolTeller = 0;
+	    // System.out.println(brettStr + " " + radStr + " " + kolStr);
 		    
-		    Brett brett = new Brett(brettStr);
+	    Brett brett = new Brett(brettStr);
 
-		    for (int i = 0; i != brettStr; i++) {
+	    for (int i = 0; i != brettStr; i++) {
 
-		    	String linje = f.next();
-		    	char[] myChar;
-		    	myChar = linje.toCharArray();
-			//	System.out.println(myChar);
+		String linje = f.next();
+		char[] myChar;
+		myChar = linje.toCharArray();
+		//	System.out.println(myChar);
 
-		    	for (int j = 0; j != myChar.length; j++) {
+		for (int j = 0; j != myChar.length; j++) {
 
-		    		if (myChar[j] == '.') {
+		    brett.brettet[i][j] = lagRute(myChar[j]);
 
-		    			brett.brettet[i][j] = new TomRute(0);
+		    if (forrige != null) {
+			forrige.neste = brett.brettet[i][j];
+		    }
+		    forrige = brett.brettet[i][j];
 
-		    			if (forrige != null) {
-		    				forrige.neste = brett.brettet[i][j];
-		    			} 
-		    			forrige = brett.brettet[i][j];
+		    //Gir korrekt boks. Testet og fungerende paa 6x6,9x9 og 16x16.
+		    int boks = (i/radStr)*radStr + (j/kolStr);
 
-
-				//Gir korrekt boks. Testet og fungerende paa 6x6,9x9 og 16x16.
-		    			int boks = (i/radStr)*radStr + (j/kolStr);
-
-		    			int a = 0;
-		    			if (brett.boks[boks].BKR[0]==null) {
-		    				brett.boks[boks].BKR[0] = brett.brettet[i][j];
-		    			} else {
-		    				while (brett.boks[boks].BKR[a]!=null) {
-		    					a++;
-		    				}
-		    				brett.boks[boks].BKR[a] = brett.brettet[i][j];
-				    //System.out.println(brett.boks[boks].boks[+1].verdi);
-		    			}
-
-		    			brett.rad[i].BKR[j] = brett.brettet[i][j];
-		    			brett.kolonne[j].BKR[i] = brett.brettet[i][j];
-
-		    			brett.brettet[i][j].boks = brett.boks[boks];
-		    			brett.brettet[i][j].rad = brett.rad[i];
-		    			brett.brettet[i][j].kolonne = brett.kolonne[j];
-		    			brett.brettet[i][j].brett = brett;
-		    			
-		    		} else {
-
-		    			int bruk = (int) myChar[j] - 48;
-		    			brett.brettet[i][j] = new FyltRute(bruk);
-
-		    			if (forrige != null) {
-		    				forrige.neste = brett.brettet[i][j];
-		    			} 
-		    			forrige = brett.brettet[i][j];
-
-		    			int boks = (i/radStr)*radStr + (j/kolStr);
-
-		    			int a = 0;
-		    			if (brett.boks[boks].BKR[0]==null) {
-		    				brett.boks[boks].BKR[0] = brett.brettet[i][j];
-		    			} else {
-		    				while (brett.boks[boks].BKR[a]!=null) {
-		    					a++;
-		    				}
-		    				brett.boks[boks].BKR[a] = brett.brettet[i][j];
-				    //System.out.println(brett.boks[boks].boks[+1].verdi);
-		    			}
-
-		    			brett.rad[i].BKR[j] = brett.brettet[i][j];
-		    			brett.kolonne[j].BKR[i] = brett.brettet[i][j];
-
-		    			brett.brettet[i][j].boks = brett.boks[boks];
-		    			brett.brettet[i][j].rad = brett.rad[i];
-		    			brett.brettet[i][j].kolonne = brett.kolonne[j];
-		    			brett.brettet[i][j].brett = brett;
-
-		    		}
-		    		radTeller++;
-		    	}
-		    	//kolTeller++;
+		    int a = 0;
+		    if (brett.boks[boks].BKR[0]==null) {
+			brett.boks[boks].BKR[0] = brett.brettet[i][j];
+		    } else {
+			while (brett.boks[boks].BKR[a]!=null) {
+			    a++;
+			}
+			brett.boks[boks].BKR[a] = brett.brettet[i][j];
+			//System.out.println(brett.boks[boks].boks[+1].verdi);
 		    }
 
-		    //Test av bokseplassering!
-		    //int boks = (i/radStr)*radStr + (j/kolStr);
-		    //	System.out.println(boks);
-		    //	kolTeller++;
-		    //	System.out.println("Teller = " + kolTeller);
+		    brett.rad[i].BKR[j] = brett.brettet[i][j];
+		    brett.kolonne[j].BKR[i] = brett.brettet[i][j];
 
-		    //Test av boks, rad og kolonneplassering.
-		    for (int i = 0; i<brettStr; i++) {
-			//System.out.println("Kolonner: " + brett.kolonne[0].kolonne[i].verdi);
-			//System.out.println("Rad: " + brett.rad[0].rad[i].verdi);
-		    	for (int j = 0; j<brettStr; j++) {
-			    //	    System.out.println("Boks " + i + ": " + brett.boks[i].BKR[j].verdi);
-			    //Test av neste:
-			    //    System.out.println("---");
-			    //	    System.out.println(brett.brettet[i][j].verdi);
-			    //	    if (brett.brettet[i][j].neste != null) {
-			    //	    System.out.println(brett.brettet[i][j].neste.verdi);
-			    //	    }
-			    //	    System.out.println("---");
-		    	}
-			//	System.out.println("");
-		    }
+		    brett.brettet[i][j].boks = brett.boks[boks];
+		    brett.brettet[i][j].rad = brett.rad[i];
+		    brett.brettet[i][j].kolonne = brett.kolonne[j];
+		    brett.brettet[i][j].brett = brett;
+			    
 
-		    //Utskrift av brettet
-		    //   brett.skrivUt();
-
-		    f.close();
-
-		    for (int i = 0; i<1; i++) {
-		    	brett.losMeg();
-		    }
-
-		    //Neste-peker-test
-		    //  Rute tmp = brett.brettet[0][0];
-		    //   System.out.println("TMPTEST");
-		    //   while(tmp!=null) {
-
-		    //	System.out.println(tmp.tVerdi);
-		    //	tmp = tmp.neste;
-		    //   }
-
-		} catch (FileNotFoundException e) {
-			System.out.println("Fil 1 ikke funnet.");
-			e.printStackTrace();
+		    //	if (myChar[j] == '.')  else 
+		    //	radTeller++;
 		}
+		//kolTeller++;
+	    }
 
+	    //Test av bokseplassering!
+	    //int boks = (i/radStr)*radStr + (j/kolStr);
+	    //	System.out.println(boks);
+	    //	kolTeller++;
+	    //	System.out.println("Teller = " + kolTeller);
 
+	    //Test av boks, rad og kolonneplassering.
+	    for (int i = 0; i<brettStr; i++) {
+		//System.out.println("Kolonner: " + brett.kolonne[0].kolonne[i].verdi);
+		//System.out.println("Rad: " + brett.rad[0].rad[i].verdi);
+		for (int j = 0; j<brettStr; j++) {
+		    //	    System.out.println("Boks " + i + ": " + brett.boks[i].BKR[j].verdi);
+		    //Test av neste:
+		    //    System.out.println("---");
+		    //	    System.out.println(brett.brettet[i][j].verdi);
+		    //	    if (brett.brettet[i][j].neste != null) {
+		    //	    System.out.println(brett.brettet[i][j].neste.verdi);
+		    //	    }
+		    //	    System.out.println("---");
+		}
+		//	System.out.println("");
+	    }
+
+	    //Utskrift av brettet
+	    //   brett.skrivUt();
+
+	    f.close();
+
+	    for (int i = 0; i<1; i++) {
+		brett.losMeg();
+	    }
+
+	    //Neste-peker-test
+	    //  Rute tmp = brett.brettet[0][0];
+	    //   System.out.println("TMPTEST");
+	    //   while(tmp!=null) {
+
+	    //	System.out.println(tmp.tVerdi);
+	    //	tmp = tmp.neste;
+	    //   }
+
+	} catch (FileNotFoundException e) {
+	    System.out.println("Fil 1 ikke funnet.");
+	    e.printStackTrace();
 	}
 
 
-	}
+    }
+
+
+}
 
 
 //SOPPEL
