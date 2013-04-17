@@ -70,6 +70,9 @@ abstract class Rute {//kanskje ikke abstract
     int verdi;
     int tVerdi;//Testverdi som programmet bruker naar den tester losninger.
 
+    int kordI;
+    int kordJ;
+
     int losTeller = 0;
     int forsok = 0; //Test i random. Skal muligens kastes.
 
@@ -89,63 +92,52 @@ abstract class Rute {//kanskje ikke abstract
 	tVerdi = i;
     }
 
-    void fyllUtRestenAvBrettet() {//Rute tmp
-	System.out.println("!1");
-	boolean lost = false;
-	if (neste==null) {
-	    System.out.println("!2");
+    void fyllUtRestenAvBrettet() {
 
-	    if (tom) {
-		for (int i = 0; i<brett.brettet.length; i++) {
-		    if (alt(i)) {
-			tVerdi=i;
-			lost=true;
-		    } else {
-			lost=false;
-			break;
-		    }
+	int b = brett.bredde+1;
+
+	if (verdi==0) {
+
+	    for (int testverdi = 1; testverdi<=b; testverdi++) {
+		if (erTestVerdiLovlig(test)) {
+		    verdi = testverdi;
+		    break;
 		}
-	    } else {
-		lost = true;
 	    }
 
-	}
-
-	if (neste!=null) {
-
-	    if (!tom) {
-		neste.fyllUtRestenAvBrettet();
-	    } else {
-		for (int i = 1; i<brett.brettet.length+1; i++) {
-		        
-		    if (alt(i)) {
-			System.out.println(i);
-			tVerdi=i;
-			System.out.println(tVerdi);
-			neste.fyllUtRestenAvBrettet();
-		    }
-
-		    //  if (i<brett.brettet.length+1) {
-		    //	tVerdi=i;
-		    //	System.out.println(tVerdi);
-		    //	neste.fyllUtRestenAvBrettet();
-		    //	   }
-			
-		}
-
-		if (tVerdi==0) {
-		    System.out.println("Return!");
+	    if (verdi == 0)
+		{
+		    // Finner ingen lovlige verdier for denne ruten
 		    return;
 		}
 
+	}
+
+	for (int i = 0; i<boks.length; i++) {
+	    if (rute != this) {
+		if (rute.verdi == testverdi) {
+		    return false;
+		}
 	    }
-
 	}
 
-	if (lost) {//lost
-	    brett.skrivUtT();
-	    System.out.println("");
+	for (int i = 0; i<rad.length; i++) {
+	    if (rute != this) {
+		if (rute.verdi == testverdi) {
+		    return false;
+		}
+	    }
 	}
+
+	for (int i = 0; i<kol.length; i++)
+	    {
+		if (rute != this) {
+		    if (rute.verdi == testverdi) {
+			return false;
+		    }
+		}
+
+	    }
 
     }
 
@@ -397,6 +389,9 @@ class LesFraFil {
 		    brett.brettet[i][j].rad = brett.rad[i];
 		    brett.brettet[i][j].kolonne = brett.kolonne[j];
 		    brett.brettet[i][j].brett = brett;
+		    brett.brettet[i][j].kordI = i;//Usikker om bruk
+		    brett.brettet[i][j].kordJ = j;//Usikker om bruk
+			
 			    
 
 		    //	if (myChar[j] == '.')  else 
