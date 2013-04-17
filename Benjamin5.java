@@ -92,6 +92,36 @@ abstract class Rute {//kanskje ikke abstract
 	tVerdi = i;
     }
 
+    boolean erTestVerdiLovlig(int testverdi) {//Nytt forsok...
+
+	for (int i = 0; i<boks.BKR.length; i++) {
+	    if (boks.BKR[i] != this) {
+		if (boks.BKR[i].verdi == testverdi) {
+		    return false;
+		}
+	    }
+	}
+
+	for (int i = 0; i<rad.BKR.length; i++) {
+	    if (rad.BKR[i] != this) {
+		if (rad.BKR[i].verdi == testverdi) {
+		    return false;
+		}
+	    }
+	}
+
+	for (int i = 0; i<kolonne.BKR.length; i++)
+	    {
+		if (kolonne.BKR[i] != this) {
+		    if (kolonne.BKR[i].verdi == testverdi) {
+			return false;
+		    }
+		}
+
+	    }
+	return false;
+    }
+
     void fyllUtRestenAvBrettet() {
 
 	int b = brett.bredde+1;
@@ -99,7 +129,7 @@ abstract class Rute {//kanskje ikke abstract
 	if (verdi==0) {
 
 	    for (int testverdi = 1; testverdi<=b; testverdi++) {
-		if (erTestVerdiLovlig(test)) {
+		if (erTestVerdiLovlig(testverdi)) {
 		    verdi = testverdi;
 		    break;
 		}
@@ -113,35 +143,9 @@ abstract class Rute {//kanskje ikke abstract
 
 	}
 
-	for (int i = 0; i<boks.length; i++) {
-	    if (rute != this) {
-		if (rute.verdi == testverdi) {
-		    return false;
-		}
-	    }
-	}
-
-	for (int i = 0; i<rad.length; i++) {
-	    if (rute != this) {
-		if (rute.verdi == testverdi) {
-		    return false;
-		}
-	    }
-	}
-
-	for (int i = 0; i<kol.length; i++)
-	    {
-		if (rute != this) {
-		    if (rute.verdi == testverdi) {
-			return false;
-		    }
-		}
-
-	    }
-
     }
 
-    boolean alt(int i) {
+    boolean alt(int i) {//Ute av bruk?
 	if (!boks.plass(i)) {
 	    return false;
 	}
@@ -154,7 +158,7 @@ abstract class Rute {//kanskje ikke abstract
 	return true;
     }
 
-    boolean erIiBKR(int i) {
+    boolean erIiBKR(int i) {//Ute av bruk?
 	for (int j = 0; j<boks.BKR.length; j++) {
 	    if (i == boks.BKR[j].tVerdi || i == kolonne.BKR[j].tVerdi || i == rad.BKR[j].tVerdi) {
 		return true;
