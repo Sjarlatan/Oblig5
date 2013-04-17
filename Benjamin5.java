@@ -90,11 +90,12 @@
 	    }
 
 	    void fyllUtRestenAvBrettet() {//Rute tmp
-
+		//	System.out.println("!1");
 		boolean lost = false;
 		if (neste==null) {
+		    System.out.println("!2");
 
-		    if (tVerdi==0) {
+		    if (tom) {
 			for (int i = 0; i<brett.brettet.length; i++) {
 			    if (alt(i)) {
 				tVerdi=i;
@@ -114,19 +115,28 @@
 		}
 
 		if (tom) {
-		    for (int i = 0; i<brett.brettet.length; i++) {
+		    for (int i = 1; i<brett.brettet.length+1; i++) {
+		        
 
 			if (alt(i)) {
+			    System.out.println(i);
 			    tVerdi=i;
+			    System.out.println(tVerdi);
 			    neste.fyllUtRestenAvBrettet();
 			}
 			
 		    }
-		}
+
+		    if (tVerdi==0) {
+			System.out.println("Return!");
+			return;
+		    }
 
 		}
 
-		if (lost) {
+		}
+
+		if (lost) {//lost
 		    brett.skrivUtT();
 		    System.out.println("");
 		}
@@ -444,6 +454,15 @@
 		    	brett.losMeg();
 		    }
 
+		    //Neste-peker-test
+		    //  Rute tmp = brett.brettet[0][0];
+		    //   System.out.println("TMPTEST");
+		    //   while(tmp!=null) {
+
+		    //	System.out.println(tmp.tVerdi);
+		    //	tmp = tmp.neste;
+		    //   }
+
 		} catch (FileNotFoundException e) {
 			System.out.println("Fil 1 ikke funnet.");
 			e.printStackTrace();
@@ -455,6 +474,8 @@
 
 	}
 
+
+//SOPPEL
 	class TestTom {
 
 		TestTom() {
