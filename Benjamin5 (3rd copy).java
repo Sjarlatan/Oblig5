@@ -36,39 +36,14 @@
 		}
 	}
 
-	class Beholder {
+	class Sudokobeholder {
 	    //LELEM
 	    //Se oblig4, men tilpass oblig5-beskrivnung.
-	    int antall = 0;
-
-	    Lelem forste;
-
-	    Beholder() {
-		//
-	    }
-
-	    class Lelem {
-		Lelem neste;
-
-		Rute[][] brett;
-
-		Lelem(Rute[][] brett) {
-		    this.brett = brett;
-		}
-	    }
-
-	    void settInn() {
-	    }
-
-	    int hentAntall() {
-		return antall;
-	    }
-
 	}
 
 	abstract class Rute {//kanskje ikke abstract
 		int verdi;
-	    int tVerdi;//Testverdi som programmet bruker naar den tester losninger.
+	    int tVerdi = 0;//Testverdi som programmet bruker naar den tester losninger.
 
 	    int losTeller = 0;
 	    int forsok = 0; //Test i random. Skal muligens kastes.
@@ -89,68 +64,101 @@
 	    	tVerdi = i;
 	    }
 
-	    void fyllUtRestenAvBrettet() {//Rute tmp
+	    void fyllUtRestenAvBrettet(int los[][], int k, int l) {
 
-		boolean lost = false;
-		if (neste==null) {
+		    //   Random rand = new Random();
+		    //	 int lav = 1;
+		    //   int hoy = brett.bredde+1;//+1????
 
-		    if (tVerdi==0) {
-			for (int i = 0; i<brett.brettet.length; i++) {
-			    if (alt(i)) {
-				tVerdi=i;
-				lost=true;
-			    }
+		    brett.brettet[0][0].forsok++;
+		    //System.out.println(forsok);
+
+		    // settInnTempVerdi(i);
+	    	int losning[][] = los;
+	    	int b = brett.brettet.length;
+	    	if (brett.brettet[k][l].tom) {
+	    		int a = 1;
+
+	    		while(a < brett.brettet.length) {
+	//System.out.println("LOL1");
+	    			if (!brett.brettet[k][l].erIiBKR(a) && a<b) {
+	    				int i = k;
+	    				int j = l;
+	    				//System.out.println(a);
+	    				losning[i][j] = a;
+
+	    				if (j < brett.brettet.length-1) {
+	    					j++;
+	    				} else {
+	    					j=0;
+	    					i++;
+	    				}
+
+	    		//		System.out.println("LOL");
+	    				if(neste!=null) {
+	    				neste.fyllUtRestenAvBrettet(losning, i, j);
+	    				}
+	    				
+	    			} 
+
+	    			if (a>b) {
+	    				System.out.println("Over og ut!");
+	    				System.out.println(brett.brettet[0][0].forsok);
+	    				return;
+	    				}
+
+	    			a++;
+
+	    		}
+
+	    	}  else {
+	    		    int i = k;
+	    			int j = l;
+	    		if (j<brett.brettet.length-1) {
+	    			j++;
+	    		} else {
+	    			i++;
+	    			j=0;
+	    		}
+	    		//System.out.println("LOL3");
+	    		if(neste!=null) {
+	    		neste.fyllUtRestenAvBrettet(losning, i, j);
+	    	}
+
+	    	}
+
+	    	if (neste==null) {
+
+	    	boolean lost = true;
+	    	for (int i = 0; i!=losning.length; i++) {
+				for (int j = 0; j< losning.length; j++) {
+					if (brett.brettet[i][j].erIiBKR(losning[i][j])) {
+						lost = false;
+						//System.out.println("Lol4");
+					//	System.out.println("Lol5");
+						System.out.println(brett.brettet[0][0].forsok);
+					}
+				}
 			}
-		    } else {
-			lost = true;
-		    }
-
-		}
-
-		if (neste!=null) {
-
-		if (!tom) {
-		    neste.fyllUtRestenAvBrettet();
-		}
-
-		if (tom) {
-		    for (int i = 0; i<brett.brettet.length; i++) {
-
-			if (alt(i)) {
-			    tVerdi=i;
-			    neste.fyllUtRestenAvBrettet();
-			}
-			
-		    }
-		}
-
-		}
-
-		if (lost) {
-		    brett.skrivUtT();
-		    System.out.println("");
-		}
+			if (lost) {
+	    	brett.brettet[0][0].losTeller++;
+	    	System.out.println("LOSNING!!! = " + losTeller);
+	    	brett.brettet[0][0].forsok=0;
+	    } else {
+	    	//System.out.println("Ikke lost.");
+	    }
 
 	    }
 
-	    boolean alt(int i) {
-		if (!boks.plass(i)) {
-		    return false;
-		}
-		if (!rad.plass(i)) {
-		    return false;
-		}
-		if (!kolonne.plass(i)) {
-		    return false;
-		}
-		return true;
 	    }
+
+
 
 	    boolean erIiBKR(int i) {
 	    	for (int j = 0; j<boks.BKR.length; j++) {
-		    if (i == boks.BKR[j].tVerdi || i == kolonne.BKR[j].tVerdi || i == rad.BKR[j].tVerdi) {
-			return true;
-		    }
+	    		if (i == boks.BKR[j].tVerdi || i == kolonne.BKR[j].tVerdi || i == rad.BKR[j].tVerdi) {
+	    			return true;
+	    		}
 	    	}
 	    	return false;
 	    }
@@ -162,7 +170,6 @@
 		TomRute(int verdi) {
 			super(verdi);
 			tom = true;
-			tVerdi=0;
 		}
 
 	}
@@ -172,7 +179,6 @@
 	    //    super(verdi);
 		FyltRute(int verdi) {
 			super(verdi);
-			tVerdi=verdi;
 			tom = false;
 		}
 	}
@@ -212,21 +218,21 @@
 		void losMeg() {
 			int b = brettet.length;
 			//System.out.println(b);
-			//	int[][] losning= new int [b][b];
-			//	for (int i = 0; i!=brettet.length; i++) {
-			//		for (int j = 0; j< brettet.length; j++) {
-			//			if (!brettet[i][j].tom) {
-					    //				losning[i][j] = brettet[i][j].verdi;
+			int[][] losning= new int [b][b];
+			for (int i = 0; i!=brettet.length; i++) {
+				for (int j = 0; j< brettet.length; j++) {
+					if (!brettet[i][j].tom) {
+						losning[i][j] = brettet[i][j].verdi;
 					//Her lager jeg et midlertidig dobbelarray av int og fyller det med verdiene som er der.
 					//Enkelt og greit.
-			//			} else {
-			//				losning[i][j] = 0;
-			//			}
-			//	//		}
-			//	}
-			//int k = 0;
-			//int l = 0;
-			brettet[0][0].fyllUtRestenAvBrettet();//brettet[0][0]
+					} else {
+						losning[i][j] = 0;
+					}
+				}
+			}
+			int k = 0;
+			int l = 0;
+			brettet[0][0].fyllUtRestenAvBrettet(losning, k, l);
 		}
 
 		boolean erJegLost() {
@@ -270,15 +276,6 @@
 		BoksKolonneRad(int i) {
 			BKR = new Rute[i];
 		}
-
-	    boolean plass(int j) {
-		for (int i = 0; i<BKR.length; i++) {
-		    if (j==BKR[i].tVerdi) {
-			return false;
-		    }
-		}
-		return true;
-	    }
 	}
 
 	class Boks extends BoksKolonneRad {
