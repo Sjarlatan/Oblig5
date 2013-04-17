@@ -88,8 +88,8 @@ abstract class Rute {//kanskje ikke abstract
 	tVerdi = verdi;
     }
 
-    void settInnTempVerdi(int i) {
-	tVerdi = i;
+    void settInnVerdi(int i) {
+	verdi = i;
     }
 
     boolean erTestVerdiLovlig(int testverdi) {//Nytt forsok...
@@ -132,7 +132,8 @@ abstract class Rute {//kanskje ikke abstract
 
 	    for (int testverdi = 1; testverdi<=b; testverdi++) {
 		if (erTestVerdiLovlig(testverdi)) {
-		    tVerdi = testverdi;
+		    verdi = testverdi;
+		    System.out.println(verdi);
 		    // System.out.println("F2 " + tVerdi);
 		    if (neste!=null) {
 			neste.fyllUtRestenAvBrettet();
@@ -147,25 +148,24 @@ abstract class Rute {//kanskje ikke abstract
 		    return;
 		}
 
-	} else {
-	    if (neste!=null) {
-		neste.fyllUtRestenAvBrettet();
-	    }
+	}
+	if (neste!=null) {
+	    neste.fyllUtRestenAvBrettet();
 	}
 
 	boolean lost = true;
+	System.out.println("FOR FOR");
 	for (int i = 0; i!=brett.brettet.length; i++) {
 	    for (int j = 0; j< brett.brettet.length; j++) {
-		if (brett.brettet[i][j].erIiBKR(brett.brettet[i][j].tVerdi)) {
+		if (brett.brettet[i][j].erIiBKR(brett.brettet[i][j].verdi)) {
 		    lost = false;
-		    break;
 		}
 	    }
 	}
-	if (lost) {
-	brett.skrivUtT();
+	//	if (lost) {
+	brett.skrivUt();
 	System.out.println("");
-	}
+	//	}
 
     }
 
@@ -213,93 +213,94 @@ abstract class Rute {//kanskje ikke abstract
 		}
 	}
 
-	class Brett {
-		Rute[][] brettet;
-		Rad[] rad;
-		Kolonne[] kolonne;
-		Boks[] boks;
+class Brett {
+    Rute[][] brettet;
+    Rad[] rad;
+    Kolonne[] kolonne;
+    Boks[] boks;
 
-		int bredde;
+    int bredde;
 
-		Brett(int i) {
-			brettet = new Rute[i][i];
-			rad = new Rad[i];
-			kolonne = new Kolonne[i];
-			boks = new Boks[i];
-			bredde = i;
+    Brett(int i) {
+	brettet = new Rute[i][i];
+	rad = new Rad[i];
+	kolonne = new Kolonne[i];
+	boks = new Boks[i];
+	bredde = i;
 
-			for (int j = 0; j!=i; j++) {
-				rad[j] = new Rad(i);
-				kolonne[j] = new Kolonne(i);
-				boks[j] = new Boks(i);
-			}
+	for (int j = 0; j!=i; j++) {
+	    rad[j] = new Rad(i);
+	    kolonne[j] = new Kolonne(i);
+	    boks[j] = new Boks(i);
+	}
+    }
+
+    //		void resetBrett() {
+    //			for (int i = 0; i!=brettet.length; i++) {
+    //				for (int j = 0; j< brettet.length; j++) {
+    //					if (brettet[i][j].tom) {
+    //						brettet[i][j].settInnTempVerdi(0);
+    //					}
+    //				}
+    //			}
+    //		}
+
+    void losMeg() {
+	int b = brettet.length;
+	//System.out.println(b);
+	//	int[][] losning= new int [b][b];
+	//	for (int i = 0; i!=brettet.length; i++) {
+	//		for (int j = 0; j< brettet.length; j++) {
+	//			if (!brettet[i][j].tom) {
+	//				losning[i][j] = brettet[i][j].verdi;
+	//Her lager jeg et midlertidig dobbelarray av int og fyller det med verdiene som er der.
+	//Enkelt og greit.
+	//			} else {
+	//				losning[i][j] = 0;
+	//			}
+	//	//		}
+	//	}
+	//int k = 0;
+	//int l = 0;
+	brettet[0][0].fyllUtRestenAvBrettet();//brettet[0][0]
+    }
+
+    boolean erJegLost() {
+	for (int i = 0; i!=brettet.length; i++) {
+	    for (int j = 0; j< brettet.length; j++) {
+		if (brettet[i][j].erIiBKR(brettet[i][j].tVerdi)) {
+		    return false;
 		}
-
-		void resetBrett() {
-			for (int i = 0; i!=brettet.length; i++) {
-				for (int j = 0; j< brettet.length; j++) {
-					if (brettet[i][j].tom) {
-						brettet[i][j].settInnTempVerdi(0);
-					}
-				}
-			}
-		}
-
-		void losMeg() {
-			int b = brettet.length;
-			//System.out.println(b);
-			//	int[][] losning= new int [b][b];
-			//	for (int i = 0; i!=brettet.length; i++) {
-			//		for (int j = 0; j< brettet.length; j++) {
-			//			if (!brettet[i][j].tom) {
-					    //				losning[i][j] = brettet[i][j].verdi;
-					//Her lager jeg et midlertidig dobbelarray av int og fyller det med verdiene som er der.
-					//Enkelt og greit.
-			//			} else {
-			//				losning[i][j] = 0;
-			//			}
-			//	//		}
-			//	}
-			//int k = 0;
-			//int l = 0;
-			brettet[0][0].fyllUtRestenAvBrettet();//brettet[0][0]
-		}
-
-		boolean erJegLost() {
-			for (int i = 0; i!=brettet.length; i++) {
-				for (int j = 0; j< brettet.length; j++) {
-					if (brettet[i][j].erIiBKR(brettet[i][j].tVerdi)) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-
-		void skrivUtT() {
-			for (int i = 0; i!=brettet.length; i++) {
-				for (int j = 0; j< brettet.length; j++) {
-					System.out.print(brettet[i][j].tVerdi);
-				}
-				System.out.println("");
-			}
-
-		}
-
-	    void skrivUt() {//int a
-
-	    	for (int i = 0; i!=brettet.length; i++) {
-	    		for (int j = 0; j< brettet.length; j++) {
-	    			if (!brettet[i][j].tom) {
-	    				System.out.print(brettet[i][j].verdi);
-	    			} else {
-	    				System.out.print(".");
-	    			}
-	    		}
-	    		System.out.println("");
-	    	}
 	    }
 	}
+	return true;
+    }
+
+    void skrivUtT() {
+	for (int i = 0; i!=brettet.length; i++) {
+	    for (int j = 0; j< brettet.length; j++) {
+		System.out.print(brettet[i][j].tVerdi);
+	    }
+	    System.out.println("");
+	}
+
+    }
+
+    void skrivUt() {//int a
+
+	for (int i = 0; i!=brettet.length; i++) {
+	    for (int j = 0; j< brettet.length; j++) {
+		//	if (!brettet[i][j].tom) { 
+		if (brettet[i][j].verdi!=0) {
+		    System.out.print(brettet[i][j].verdi);
+		} else {
+		    System.out.print(".");
+		}
+	    }
+	    System.out.println("");
+	}
+    }
+}
 
 	abstract class BoksKolonneRad {
 		Rute[] BKR;
