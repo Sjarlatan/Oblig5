@@ -96,7 +96,9 @@ abstract class Rute {//kanskje ikke abstract
 
 	for (int i = 0; i<boks.BKR.length; i++) {
 	    if (boks.BKR[i] != this) {
+	        //	System.out.println("BKRBOKS1");
 		if (boks.BKR[i].verdi == testverdi) {
+		    //	System.out.println("BKRBOKS2");
 		    return false;
 		}
 	    }
@@ -119,19 +121,23 @@ abstract class Rute {//kanskje ikke abstract
 		}
 
 	    }
-	return false;
+	return true;
     }
 
     void fyllUtRestenAvBrettet() {
-
-	int b = brett.bredde+1;
+	//	System.out.println("F1");
+	int b = brett.bredde;
 
 	if (verdi==0) {
 
 	    for (int testverdi = 1; testverdi<=b; testverdi++) {
 		if (erTestVerdiLovlig(testverdi)) {
-		    verdi = testverdi;
-		    break;
+		    tVerdi = testverdi;
+		    // System.out.println("F2 " + tVerdi);
+		    if (neste!=null) {
+			neste.fyllUtRestenAvBrettet();
+		    }
+		     break;
 		}
 	    }
 
@@ -141,6 +147,24 @@ abstract class Rute {//kanskje ikke abstract
 		    return;
 		}
 
+	} else {
+	    if (neste!=null) {
+		neste.fyllUtRestenAvBrettet();
+	    }
+	}
+
+	boolean lost = true;
+	for (int i = 0; i!=brett.brettet.length; i++) {
+	    for (int j = 0; j< brett.brettet.length; j++) {
+		if (brett.brettet[i][j].erIiBKR(brett.brettet[i][j].tVerdi)) {
+		    lost = false;
+		    break;
+		}
+	    }
+	}
+	if (lost) {
+	brett.skrivUtT();
+	System.out.println("");
 	}
 
     }
