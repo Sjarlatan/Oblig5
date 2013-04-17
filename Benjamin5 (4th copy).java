@@ -124,8 +124,8 @@ abstract class Rute {//kanskje ikke abstract
 	return true;
     }
 
-    boolean fyllUtRestenAvBrettet() {
-	// System.out.println("F1");
+    void fyllUtRestenAvBrettet() {
+	//	System.out.println("F1");
 	int b = brett.bredde;
 
 	if (verdi==0) {
@@ -133,51 +133,44 @@ abstract class Rute {//kanskje ikke abstract
 	    for (int testverdi = 1; testverdi<=b; testverdi++) {
 		if (erTestVerdiLovlig(testverdi)) {
 		    verdi = testverdi;
-
-		    if (neste != null) {
-			if (neste.fyllUtRestenAvBrettet()) {
-			    neste.fyllUtRestenAvBrettet();
-			    
-			    return true;
-			}
-			verdi = 0;
+		    System.out.println(verdi);
+		    // System.out.println("F2 " + tVerdi);
+		    if (neste!=null) {
+			neste.fyllUtRestenAvBrettet();
 		    }
-
+		    //	      break;
 		}
 	    }
 
 	    if (verdi == 0) {
-		// Finner ingen lovlige verdier for denne ruten
-		return false;
+		    // Finner ingen lovlige verdier for denne ruten
+		    return;
+		}
+
+	} else {
+
+	    if (neste!=null) {
+		neste.fyllUtRestenAvBrettet();
 	    }
 
 	}
 
-	if (neste != null) {
-	    return neste.fyllUtRestenAvBrettet();
-	} else {
-	    losTeller++;
-	    brett.skrivUt();
-	    System.out.println(losTeller);
-	}
 
-	return true;
-    }
-
-    //	boolean lost = true;
+	boolean lost = true;
 	//System.out.println("FOR FOR");
-    //	for (int i = 0; i!=brett.brettet.length; i++) {
-    //	    for (int j = 0; j< brett.brettet.length; j++) {
-    //		if (brett.brettet[i][j].verdi==0 && erTestVerdiLovlig(brett.brettet[i][j].verdi)) {
-    //		    lost = false;
-    //		}
-    //	    }
-    //	}
-    //		if (lost) {
-    //	brett.skrivUt();
-    //	System.out.println("");
-    //		}
+	for (int i = 0; i!=brett.brettet.length; i++) {
+	    for (int j = 0; j< brett.brettet.length; j++) {
+		if (brett.brettet[i][j].verdi==0 && erTestVerdiLovlig(brett.brettet[i][j].verdi)) {
+		    lost = false;
+		}
+	    }
+	}
+		if (lost) {
+	brett.skrivUt();
+	System.out.println("");
+		}
 
+    }
 
     boolean alt(int i) {//Ute av bruk?
 	if (!boks.plass(i)) {
