@@ -90,7 +90,7 @@
 	    }
 
 	    void fyllUtRestenAvBrettet() {//Rute tmp
-		//	System.out.println("!1");
+		System.out.println("!1");
 		boolean lost = false;
 		if (neste==null) {
 		    System.out.println("!2");
@@ -100,6 +100,9 @@
 			    if (alt(i)) {
 				tVerdi=i;
 				lost=true;
+			    } else {
+				lost=false;
+				break;
 			    }
 			}
 		    } else {
@@ -110,29 +113,26 @@
 
 		if (neste!=null) {
 
-		if (!tom) {
-		    neste.fyllUtRestenAvBrettet();
-		}
-
-		if (tom) {
-		    for (int i = 1; i<brett.brettet.length+1; i++) {
+		    if (!tom) {
+			neste.fyllUtRestenAvBrettet();
+		    } else {
+			for (int i = 1; i<brett.brettet.length+1; i++) {
 		        
-
-			if (alt(i)) {
-			    System.out.println(i);
-			    tVerdi=i;
-			    System.out.println(tVerdi);
-			    neste.fyllUtRestenAvBrettet();
-			}
+			    if (alt(i)) {
+				System.out.println(i);
+				tVerdi=i;
+				System.out.println(tVerdi);
+				neste.fyllUtRestenAvBrettet();
+			    }
 			
-		    }
+			}
 
-		    if (tVerdi==0) {
-			System.out.println("Return!");
-			return;
-		    }
+			if (tVerdi==0) {
+			    System.out.println("Return!");
+			    return;
+			}
 
-		}
+		    }
 
 		}
 
