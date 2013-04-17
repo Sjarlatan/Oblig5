@@ -127,6 +127,7 @@ abstract class Rute {//kanskje ikke abstract
     boolean fyllUtRestenAvBrettet() {
 	// System.out.println("F1");
 	int b = brett.bredde;
+	boolean lost = false;
 
 	if (verdi==0) {
 
@@ -135,11 +136,11 @@ abstract class Rute {//kanskje ikke abstract
 		    verdi = testverdi;
 
 		    if (neste != null) {
-			if (neste.fyllUtRestenAvBrettet()) {
-			    neste.fyllUtRestenAvBrettet();
+			//	if (neste.fyllUtRestenAvBrettet()) {
+			     neste.fyllUtRestenAvBrettet();
 			    
-			    return true;
-			}
+			    //return true;
+			     //}
 			verdi = 0;
 		    }
 
@@ -156,8 +157,23 @@ abstract class Rute {//kanskje ikke abstract
 	if (neste != null) {
 	    return neste.fyllUtRestenAvBrettet();
 	} else {
-	    losTeller++;
-	    brett.skrivUt();
+	    lost=true;
+	    for (int i = 0; i!=brett.brettet.length; i++) {
+		for (int j = 0; j< brett.brettet.length; j++) {
+
+		    if (brett.brettet[i][j].verdi==0 && erTestVerdiLovlig(brett.brettet[i][j].verdi)) {
+			    lost=false;
+			    break;
+			}
+	    
+
+		}
+	    }
+	}
+
+	if (lost) {
+	losTeller++;
+	brett.skrivUt();
 	    System.out.println(losTeller);
 	}
 
