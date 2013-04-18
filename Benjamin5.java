@@ -57,7 +57,39 @@
 		}
 	    }
 
-	    void settInn() {
+	    void settInn(Rute[][] brett) {
+
+		if (forste==null) {
+		    Lelem lel = new Lelem(brett);
+		    forste = lel;
+		    antall++;
+		    return;
+		}
+
+		if (antall==1) {
+		Lelem lel = new Lelem(brett);
+		forste.neste = lel;
+		antall++;
+		return;
+		}
+
+		Lelem lel = new Lelem(brett);
+		for (Lelem en = forste; en!=null; en=en.neste) {
+		    en.neste = lel;
+		    antall++;
+		    return;
+		    }
+
+	    }
+
+	    Rute[][] taUt() {
+
+		Lelem tmp = forste;
+		forste = tmp.neste;
+
+		return tmp.brett;
+		
+
 	    }
 
 	    int hentAntall() {
@@ -68,7 +100,7 @@
 
 abstract class Rute {//kanskje ikke abstract
     int verdi;
-    int tVerdi;//Testverdi som programmet bruker naar den tester losninger.
+    int tVerdi;//Testverdi som programmet bruker naar den tester losninger. //Fortid?
 
     int kordI;
     int kordJ;
@@ -81,7 +113,7 @@ abstract class Rute {//kanskje ikke abstract
     Kolonne kolonne;
     Rad rad;
     Rute neste;
-    static Brett brett; //Eller ikke...
+    static Brett brett;
 
     Rute(int verdi) {
 	this.verdi = verdi;
@@ -125,7 +157,7 @@ abstract class Rute {//kanskje ikke abstract
     }
 
     boolean fyllUtRestenAvBrettet() {
-	// System.out.println("F1");
+	//	System.out.println("F1");
 	int b = brett.bredde;
 	boolean lost = false;
 
@@ -136,45 +168,44 @@ abstract class Rute {//kanskje ikke abstract
 		    verdi = testverdi;
 
 		    if (neste != null) {
-			//	if (neste.fyllUtRestenAvBrettet()) {
-			     neste.fyllUtRestenAvBrettet();
+
+			if (neste.fyllUtRestenAvBrettet()) {//??
+			    neste.fyllUtRestenAvBrettet();
 			    
-			    //return true;
-			     //}
+			    return true;
+
+			}
+
 			verdi = 0;
 		    }
 
 		}
 	    }
 
-	    if (verdi == 0) {
-		// Finner ingen lovlige verdier for denne ruten
+	    if (verdi == 0) {//	Finner ingen lovlige verdier for denne ruten
 		return false;
 	    }
 
 	}
 
 	if (neste != null) {
+
 	    return neste.fyllUtRestenAvBrettet();
+
 	} else {
 	    lost=true;
-	    for (int i = 0; i!=brett.brettet.length; i++) {
-		for (int j = 0; j< brett.brettet.length; j++) {
-
-		    if (brett.brettet[i][j].verdi==0 && erTestVerdiLovlig(brett.brettet[i][j].verdi)) {
-			    lost=false;
-			    break;
-			}
-	    
-
-		}
+	    if (brett.erJegLost()) {//???
+		lost=false;
 	    }
+
 	}
 
 	if (lost) {
-	losTeller++;
-	brett.skrivUt();
-	    System.out.println(losTeller);
+	    losTeller++;
+	    brett.skrivUt();
+	    //System.out.println(losTeller);
+	    brett.beholder.settInn(brett.brettet);
+	    System.out.println(brett.beholder.hentAntall());
 	}
 
 	return true;
@@ -240,6 +271,9 @@ abstract class Rute {//kanskje ikke abstract
 	}
 
 class Brett {
+
+    static Beholder beholder;
+
     Rute[][] brettet;
     Rad[] rad;
     Kolonne[] kolonne;
@@ -253,6 +287,7 @@ class Brett {
 	kolonne = new Kolonne[i];
 	boks = new Boks[i];
 	bredde = i;
+	beholder = new Beholder();
 
 	for (int j = 0; j!=i; j++) {
 	    rad[j] = new Rad(i);
@@ -272,29 +307,13 @@ class Brett {
     //		}
 
     void losMeg() {
-	int b = brettet.length;
-	//System.out.println(b);
-	//	int[][] losning= new int [b][b];
-	//	for (int i = 0; i!=brettet.length; i++) {
-	//		for (int j = 0; j< brettet.length; j++) {
-	//			if (!brettet[i][j].tom) {
-	//				losning[i][j] = brettet[i][j].verdi;
-	//Her lager jeg et midlertidig dobbelarray av int og fyller det med verdiene som er der.
-	//Enkelt og greit.
-	//			} else {
-	//				losning[i][j] = 0;
-	//			}
-	//	//		}
-	//	}
-	//int k = 0;
-	//int l = 0;
 	brettet[0][0].fyllUtRestenAvBrettet();//brettet[0][0]
     }
 
     boolean erJegLost() {
 	for (int i = 0; i!=brettet.length; i++) {
 	    for (int j = 0; j< brettet.length; j++) {
-		if (brettet[i][j].erIiBKR(brettet[i][j].tVerdi)) {
+		if (brettet[i][j].erIiBKR(brettet[i][j].verdi)) {
 		    return false;
 		}
 	    }
@@ -374,7 +393,7 @@ class LesFraFil {
 	return new FyltRute(bruk);
     }
 
-    void filtest() {
+    void filtest() {//Bytt til jFileChooser
 
 	//final JFileChooser fc = new JFileChooser();
 	//int returnVal = fc.showOpenDialog(null);
@@ -386,15 +405,14 @@ class LesFraFil {
 	//JfileChooser
 	//File fil1 = new File(fc.getSelectedFile());
 
-	File fil1 = new File("6x6oppg28losn.txt");
+	File fil1 = new File("brett.9.3.txt");
 	int teller = 0;
 
 	try {
 	    Scanner f = new Scanner(fil1);
 
-	    int brettStr = f.nextInt();//6
-	    //OBS: Skal vaere omvendt. radStr = kol. kolStr = rad
-	    int radStr = f.nextInt();//2 //Bokser innad i brettet. Sporr Linn. Jepp.
+	    int brettStr = f.nextInt();//6	  
+	    int radStr = f.nextInt();//2 //Bokser innad i brettet.
 	    int kolStr = f.nextInt();//3
 
 	    int radTeller = 0;
@@ -403,16 +421,17 @@ class LesFraFil {
 	    Rute forrige = null;
 
 	    //   int kolTeller = 0;
-	    // System.out.println(brettStr + " " + radStr + " " + kolStr);
+	    System.out.println(brettStr + " " + radStr + " " + kolStr);
 		    
 	    Brett brett = new Brett(brettStr);
+	    
 
 	    for (int i = 0; i != brettStr; i++) {
 
 		String linje = f.next();
 		char[] myChar;
 		myChar = linje.toCharArray();
-		//	System.out.println(myChar);
+		//System.out.println(myChar);
 
 		for (int j = 0; j != myChar.length; j++) {
 
@@ -504,29 +523,18 @@ class LesFraFil {
 
     }
 
-
 }
 
+class Skriv {
 
-//SOPPEL
-	class TestTom {
+    int antUtskrift = 0;
+    Skriv() {
+    }
 
-		TestTom() {
-			Brett brett = new Brett(4);
+    void utskrift (Rute[][] brett) {//throws IOException
+	//	BufferedWritter=nw buffered writer(utFil, true));
 
-			for (int i = 0; i<4; i++) {
-				for (int j = 0; j<4; j++) {
-					brett.brettet[i][j] = new TomRute(0);
-				}
-			}
-		}
-	}
+	//
 
-	//Kanskje kaste.
-	class Losning {
-		Rute[][] lostBrett;
-
-		Losning(int i) {
-			lostBrett = new Rute[i][i];
-		}
-	}
+    }
+}
