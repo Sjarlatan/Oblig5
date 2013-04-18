@@ -1,20 +1,18 @@
 	import java.io.*;
 	import java.util.*;
-	import java.util.Iterator;//...
 	import java.util.Scanner;
 	import javax.swing.JFileChooser;
-	import java.util.Random; //For tilfeldig utvalg...
-	//Maa ryddes i om ikke alle benyttes.
 
-	//SKAL BRUKE JFILECHOOSER!!!
+//Huskeliste:
+//ARGS
+//UTSKRIFT TIL FIl
 
-	//ELLER ARGS HUSK DET
-
-	//private jpanel lagBrettet(+neste?)
-	//frame, underframer jTextField ruten = new JTextField;
 
 //Utskrift til fil funker ikke
+//Og args-funksjonalitet mangler
 //Tom 4x4 gir bare 72 losninger.
+
+//Programmets GUI er Stein Gjessing sitt, med noen tilpassede modifikasjoner.
 
 	class Benjamin5 {
 		public static void main (String args[]) {
@@ -22,17 +20,8 @@
 
 			LesFraFil les = new LesFraFil();
 
-			//	TestTom tt = new TestTom();
-
 			les.filtest();
 
-		//Test av char-utskrift
-		//	char a = 'A';
-		//	char f = 'F';
-		//	int achar = (int) a - 48;
-		//	int fchar = (int) f - 48;
-		//	System.out.println(achar);
-		//	System.out.println(fchar);
 
 		}
 	}
@@ -64,23 +53,38 @@
 		    Lelem lel = new Lelem(brett);
 		    forste = lel;
 		    antall++;
-		    System.out.println(lel.brett[0][0].verdi);
+		    //   System.out.println("A: " + antall);
+		    //Test av oppdatert verdi;
+		    //System.out.println(lel.brett[0][0].verdi);
 		    return;
 		}
 
 		if (antall==1) {
-		Lelem lel = new Lelem(brett);
-		forste.neste = lel;
-		antall++;
-		return;
-		}
+		    Lelem lel = new Lelem(brett);
+        
+		    lel.neste = forste;
+		    forste = lel;
+
+		    antall++;
+		    //   System.out.println("B: " + antall);
+		    return;
+		} 
 
 		Lelem lel = new Lelem(brett);
-		for (Lelem en = forste; en!=null; en=en.neste) {
-		    en.neste = lel;
-		    antall++;
-		    return;
-		    }
+		//	for (Lelem en = forste; en!=null; en=en.neste) {
+		
+		//	en.neste = lel;
+
+		Lelem tmp = forste;
+		lel.neste = tmp;
+		forste = lel;
+
+		    
+		antall++;
+		//	System.out.println("C: " + antall);
+		return;
+		// }
+        
 
 	    }
 
@@ -88,6 +92,8 @@
 
 		Lelem tmp = forste;
 		forste = tmp.neste;
+		antall--;
+		//	System.out.println("D: " + antall);
 
 		return tmp.brett;
 		
@@ -206,12 +212,26 @@ abstract class Rute {//kanskje ikke abstract
 	    losTeller++;
 	    // brett.skrivUt();
 	    //System.out.println(losTeller);
+
+	    //Klonetid!
+	    //For at losningene som ligger i beholderen skal forbli forskjellige.
+	    Rute[][] losning = new Rute[b][b];
+	    for (int i = 0; i<b; i++) {
+		for (int j = 0; j<b; j++) {
+
+		    FyltRute tmp = new FyltRute(brett.brettet[i][j].verdi);
+		    losning[i][j] = tmp;
+
+		}
+
+	    }
+
 	    if (losTeller < 500) {
-	    brett.beholder.settInn(brett.brettet);
+		brett.beholder.settInn(losning);//brett.brettet
 	    }
 	    //Utskrift-tester:
 	    // System.out.println("Verdi: " + brett.brettet[0][0].verdi);
-	    //brett.utskrift(brett.brettet);
+	    brett.utskrift(brett.brettet);
 	    // System.out.println(brett.beholder.hentAntall());
 	}
 
@@ -360,17 +380,19 @@ class Brett {
 
 	//Denne funker ikke
 
-	System.out.println("LENGTH: " + brett.length);
+	//	System.out.println("LENGTH: " + brett.length);
 	try {
-	String utfil = "utFil.txt";
+	    //    System.out.println("LENGTH: " + brett.length);
+	String utfil = "utfil.txt";
 	BufferedWriter polse = new BufferedWriter (new FileWriter(utfil, true));
 	//	polse.write
 
 	for (int i = 0; i<brett.length; i++) {
 	    // System.out.println("LOLOLOLOLOL");
 	    for (int j = 0; j<brett.length; j++) {
-
+		//	System.out.println(brett[i][j].verdi);
 		polse.write(brett[i][j].verdi+"");
+		polse.write("JAN");
 		//	polse.write("TING");
 
 	    }
@@ -427,16 +449,25 @@ class LesFraFil {
 
 	    return new TomRute(0);
 	}
+	int bruk = 0;
 
-	int bruk = (int) myChar - 48;
+	int bruk2 = (int) myChar - 48;
+
+	if(bruk2>9) {
+	    bruk = bruk2 - 7;
+	} else {
+	    bruk = bruk2;
+	}
+
+	//System.out.println(bruk);
 	return new FyltRute(bruk);
     }
 
     void filtest() {//Bytt til jFileChooser
 
-	//final JFileChooser fc = new JFileChooser();
-	//int returnVal = fc.showOpenDialog(null);
-	//System.out.println(fc.getSelectedFile());
+	final JFileChooser fc = new JFileChooser();
+	int returnVal = fc.showOpenDialog(null);
+	System.out.println(fc.getSelectedFile());
 
 	//Testfil: 
 	//File fil1 = new File("6x6oppg28losn.txt");
@@ -448,7 +479,7 @@ class LesFraFil {
 	int teller = 0;
 
 	try {
-	    Scanner f = new Scanner(fil1);
+	    Scanner f = new Scanner(fc.getSelectedFile());
 
 	    int brettStr = f.nextInt();//6	  
 	    int radStr = f.nextInt();//2 //Bokser innad i brettet.

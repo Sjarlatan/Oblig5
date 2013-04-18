@@ -24,18 +24,21 @@ public class SudokuGUI extends JFrame implements ActionListener {//implements Ac
     //losningbrett
     //losningsbrett.brettet[0
 
-    private final int RUTE_STRELSE = 50;	/* Størrelsen på hver rute */
-        private final int PLASS_TOPP = 50;	/* Plass på toppen av brettet */
+    private final int RUTE_STRELSE = 50;	/* Strrelsen p hver rute */
+        private final int PLASS_TOPP = 50;	/* Plass p toppen av brettet */
 
-	private JTextField[][] brett;   /* for å tegne ut alle rutene */
-	private int dimensjon;		/* størrelsen på brettet (n) */
+	private JTextField[][] brett;   /* for tegne ut alle rutene */
+	private int dimensjon;		/* strrelsen p brettet (n) */
 	private int vertikalAntall;	/* antall ruter i en boks loddrett */
 	private int horisontalAntall;	/* antall ruter i en boks vannrett */
+
     Brett mittB;
+    JButton finnSvarKnapp;
 
-    JButton	finnSvarKnapp;
+	    JButton nesteKnapp;
+    Rute[][] neste;
 
-	    JButton	nesteKnapp;
+	int fusTeller = 0;
 
 	/** Lager et brett med knapper langs toppen. */
     public SudokuGUI(int dim, int hd, int br, Brett mittB) {
@@ -75,7 +78,7 @@ public class SudokuGUI extends JFrame implements ActionListener {//implements Ac
 		setPreferredSize(new Dimension(new Dimension(dimensjon * RUTE_STRELSE, 
                                                              dimensjon * RUTE_STRELSE)));		
 		for(int i = 0; i < dimensjon; i++) {
-			/* finn ut om denne raden trenger en tykker linje på toppen: */
+			/* finn ut om denne raden trenger en tykker linje paa toppen: */
 			topp = (i % vertikalAntall == 0 && i != 0) ? 4 : 1;
 			for(int j = 0; j < dimensjon; j++) {
 				/* finn ut om denne ruten er en del av en kolonne 
@@ -103,10 +106,10 @@ public class SudokuGUI extends JFrame implements ActionListener {//implements Ac
 		JPanel knappPanel = new JPanel();
 		knappPanel.setLayout(new BoxLayout(knappPanel, BoxLayout.X_AXIS));
 
-		finnSvarKnapp = new JButton("Finn løsning(er)");
+		finnSvarKnapp = new JButton("Finn lning(er)");
 		finnSvarKnapp.addActionListener(this);
 
-		nesteKnapp = new JButton("Neste løsning");
+		nesteKnapp = new JButton("Neste lng");
 		nesteKnapp.addActionListener(this);
 
 		knappPanel.add(finnSvarKnapp);
@@ -116,29 +119,102 @@ public class SudokuGUI extends JFrame implements ActionListener {//implements Ac
 
     public void actionPerformed(ActionEvent e) {
 
-	Rute[][] ruter = mittB.beholder.forste.brett;
+		if(fusTeller>0) {
+	    finnSvarKnapp.setEnabled(false);
+
+	} 
 
 	if (e.getSource()==finnSvarKnapp) {
-	    System.out.println("LOL");
-	    System.out.println(mittB.beholder.forste.brett[0][0].verdi);
+	    //Denne er egentlig meningslos, men jeg har ikke tid til aa endre den.
+	    //og trykk av den om det kun er en losning forer til heng.
+	    Rute[][] forste = mittB.beholder.forste.brett;
+
+	    for (int i = 0; i<dimensjon; i++) {
+		for (int j = 0; j<dimensjon; j++) {
+
+		    if(forste[i][j].verdi<10) {
+
+		    String o = ""+forste[i][j].verdi;
+		    brett[i][j].setText(o);
+
+		    } else {
+
+			char c = (char) (forste[i][j].verdi + 55);
+			String d = Character.toString(c);
+
+			brett[i][j].setText(d);
+
+		    }
+
+		}
+
+	    }
+
+	    fusTeller++;
+
+	    //   neste = forste.neste;
+	    //   nesteTeller = 0;
+
+	    //Test:
+	    // System.out.println("LOL");
+	    // System.out.println(mittB.beholder.forste.brett[0][0].verdi);
 	}
 
-	if (e.getSource()==nesteKnapp) {
-	    System.out.println("LOL2");
-	}
 
-	//	System.out.println("LOL");
+	if(mittB.beholder.antall==0) {
+	    nesteKnapp.setEnabled(false);
+
+	} 
+
+	if(mittB.beholder.antall!=0) {
+	    if (e.getSource()==nesteKnapp) {
+
+		fusTeller++;
+
+		neste = mittB.beholder.taUt();
+
+		//Den over kunne vaert lik. Jeg tar jo ut forste, saa det blir 
+
+			    
+
+		for (int i = 0; i<dimensjon; i++) {
+		    for (int j = 0; j<dimensjon; j++) {
+
+			if(neste!=null) {
+
+			    if(neste[i][j].verdi<10) {
+				    String o = ""+neste[i][j].verdi;
+			
+				    brett[i][j].setText(o);
+				} else {
+
+				    char c = (char) (neste[i][j].verdi + 55);
+				    String d = Character.toString(c);
+
+				    brett[i][j].setText(d);
+				}
+
+			    }
+
+		    }
+
+		}
 		
-	 }
+		//Test:
+		//  System.out.println("LOL2");
+	    }
 
+	}
+		
+    }
 
-    public static void main(String[] args) {
+    //    public static void main(String[] args) {
 
-	Brett tomBrett = new Brett(6);
+	//	Brett tomBrett = new Brett(6);
 
-	new SudokuGUI(6, 2, 3, tomBrett);		}
+	//	new SudokuGUI(6, 2, 3, tomBrett);		}
 
-}
+    //}
 
 
 
