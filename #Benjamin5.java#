@@ -64,7 +64,8 @@
 		    Lelem lel = new Lelem(brett);
 		    forste = lel;
 		    antall++;
-		    System.out.println(lel.brett[0][0].verdi);
+		    //Test av oppdatert verdi;
+		    //System.out.println(lel.brett[0][0].verdi);
 		    return;
 		}
 

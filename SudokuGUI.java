@@ -11,26 +11,39 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import java.awt.*;
+import java.awt.event.*;
+
 /** 
 * Tegner ut et Sudoku-brett.
 * @author Christian Tryti
 * @author Stein Gjessing
 */
-public class SudokuGUI extends JFrame {//implements ActionListener//
+public class SudokuGUI extends JFrame implements ActionListener {//implements ActionListener//
 
-	private final int RUTE_STRELSE = 50;	/* Størrelsen på hver rute */
+    //losningbrett
+    //losningsbrett.brettet[0
+
+    private final int RUTE_STRELSE = 50;	/* Størrelsen på hver rute */
         private final int PLASS_TOPP = 50;	/* Plass på toppen av brettet */
 
 	private JTextField[][] brett;   /* for å tegne ut alle rutene */
 	private int dimensjon;		/* størrelsen på brettet (n) */
 	private int vertikalAntall;	/* antall ruter i en boks loddrett */
 	private int horisontalAntall;	/* antall ruter i en boks vannrett */
+    Brett mittB;
+
+    JButton	finnSvarKnapp;
+
+	    JButton	nesteKnapp;
 
 	/** Lager et brett med knapper langs toppen. */
-	public SudokuGUI(int dim, int hd, int br) {
+    public SudokuGUI(int dim, int hd, int br, Brett mittB) {
        		dimensjon = dim;
 		vertikalAntall = hd;
 		horisontalAntall = br;
+		this.mittB = mittB;
+		
 
 		brett = new JTextField[dimensjon][dimensjon];
 
@@ -89,14 +102,41 @@ public class SudokuGUI extends JFrame {//implements ActionListener//
 	private JPanel lagKnapper() {
 		JPanel knappPanel = new JPanel();
 		knappPanel.setLayout(new BoxLayout(knappPanel, BoxLayout.X_AXIS));
-		JButton finnSvarKnapp = new JButton("Finn løsning(er)");
-		JButton nesteKnapp = new JButton("Neste løsning");
+
+		finnSvarKnapp = new JButton("Finn løsning(er)");
+		finnSvarKnapp.addActionListener(this);
+
+		nesteKnapp = new JButton("Neste løsning");
+		nesteKnapp.addActionListener(this);
+
 		knappPanel.add(finnSvarKnapp);
                 knappPanel.add(nesteKnapp);
 		return knappPanel;
 	}
-public static void main(String[] args) {		new SudokuGUI(6, 2, 3);		}
 
+    public void actionPerformed(ActionEvent e) {
+
+	Rute[][] ruter = mittB.beholder.forste.brett;
+
+	if (e.getSource()==finnSvarKnapp) {
+	    System.out.println("LOL");
+	    System.out.println(mittB.beholder.forste.brett[0][0].verdi);
+	}
+
+	if (e.getSource()==nesteKnapp) {
+	    System.out.println("LOL2");
+	}
+
+	//	System.out.println("LOL");
+		
+	 }
+
+
+    public static void main(String[] args) {
+
+	Brett tomBrett = new Brett(6);
+
+	new SudokuGUI(6, 2, 3, tomBrett);		}
 
 }
 
